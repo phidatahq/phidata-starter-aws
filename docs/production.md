@@ -4,25 +4,33 @@ This guide describes how to manage the production data platform running on AWS.
 
 Production Services:
 
-- Traefik Dashboard: https://traefik.aws-dp.com
-- Airflow Webserver: https://airflow.aws-dp.com
-- Superset Webserver: https://superset.aws-dp.com
-- Airflow Flower: https://flower.aws-dp.com
-- Whoami: https://whoami.aws-dp.com
+- Traefik Dashboard: https://traefik.domain.com
+- Airflow Webserver: https://airflow.domain.com
+- Superset Webserver: https://superset.domain.com
+- Airflow Flower: https://flower.domain.com
+- Whoami: https://whoami.domain.com
 
-## Creating production resources
+## Deploying the production platform
 
-The [workspace/prd](../workspace/prd) directory contains the source code for the production platform.
+The [workspace/prd](../workspace/prd) directory contains the code for the production platform.
 
 Use `phi ws <command> --env prd` to create/update/delete prd resources.
 
 1. Activate a virtual env
 
 ```sh
-source dpenv/bin/activate
+source ~/.venvs/dpenv/bin/activate
 ```
 
-2. Deploy aws resources
+2. Create & push production images
+
+Set `PUSH_DOCKER_IMAGES=True` in the `.env` file and run:
+
+```sh
+phi ws up --env prd --config docker --type image
+```
+
+3. Deploy aws resources
 
 ```sh
 phi ws up --env prd --config aws
@@ -34,9 +42,21 @@ phi ws up --env prd --config aws
 phi ws up --env prd --config k8s
 ```
 
+4. After the superset-init container has completed its run, turn it down using:
+
+```sh
+phi ws down --env prd --config k8s --app superset-init
+```
+
+### Point `*.domain.com` to traefik loadbalancer
+
+1. Find the loadbalancer external-ip for service `traefik-svc` using: `kubectl get svc`
+2. Go to the `domain.com` hosted zone in route 53.
+3. Create an A type record for `*.domain.com` and point to the external-ip of the network loadbalancer.
+
 ### Deploy the k8s dashboard
 
-The k8s dashboard is made of 3 parts:
+The k8s dashboard has 3 parts:
 
 1. Metrics Server for collecting CPU/Mem metrics
 2. Kubernetes Dashboard
@@ -102,7 +122,7 @@ phi ws up --env prd --config aws --name kubeconfig
 
 ```sh
 aws eks update-kubeconfig \
-  --name aws-dp-prd-cluster \
+  --name dp-prd-cluster \
   --region us-east-1
 ```
 
@@ -118,7 +138,7 @@ k get nodes
 
 ## Create a production release
 
-Please read the [PRODUCTION_RELEASE](PRODUCTION_RELEASE.md) guide.
+Please read the [production_release](./production_release.md) guide.
 
 ## Helpful commands
 

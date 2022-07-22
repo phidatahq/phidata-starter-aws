@@ -1,6 +1,6 @@
 # EKS Access
 
-This document describes how to access staging/production kubernetes resources.
+This document describes how to grant access to kubernetes resources.
 
 ### User Access
 
@@ -25,7 +25,7 @@ To check the existing `aws-auth` ConfigMap:
 
 ```sh
 eksctl get iamidentitymapping \
-    --cluster aws-dp-prd-cluster \
+    --cluster dp-prd-cluster \
     --region=us-east-1
 ```
 
@@ -60,7 +60,7 @@ eksctl create iamidentitymapping \
 
 ```
 eksctl get iamidentitymapping \
-    --cluster aws-dp-prd-cluster \
+    --cluster dp-prd-cluster \
     --region=us-east-1
 ```
 

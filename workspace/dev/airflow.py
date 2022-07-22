@@ -14,7 +14,7 @@ from workspace.settings import ws_name, ws_dir_path, use_cache, airflow_enabled
 
 # Airflow db: A postgres instance to use as the database for airflow
 dev_airflow_db = PostgresDb(
-    name=f"af-db-{ws_name}",
+    name=f"airflow-db-{ws_name}",
     enabled=airflow_enabled,
     db_user="airflow",
     db_password="airflow",
@@ -25,7 +25,7 @@ dev_airflow_db = PostgresDb(
 
 # Airflow redis: A redis instance to use as the celery backend for airflow
 dev_airflow_redis = Redis(
-    name=f"af-redis-{ws_name}",
+    name=f"airflow-redis-{ws_name}",
     enabled=airflow_enabled,
     command=["redis-server", "--save", "60", "1"],
     container_host_port=8321,
@@ -38,6 +38,8 @@ dev_airflow_ws = AirflowWebserver(
     image_tag=dev_airflow_image.tag,
     db_app=dev_airflow_db,
     wait_for_db=True,
+    # delay start by 60 seconds for the db to be initialized
+    wait_for_db_init=True,
     redis_app=dev_airflow_redis,
     wait_for_redis=True,
     executor="CeleryExecutor",
@@ -93,6 +95,8 @@ dev_airflow_default_workers = AirflowWorker(
     image_tag=dev_airflow_image.tag,
     db_app=dev_airflow_db,
     wait_for_db=True,
+    # delay start by 60 seconds for the db to be initialized
+    wait_for_db_init=True,
     redis_app=dev_airflow_redis,
     wait_for_redis=True,
     executor="CeleryExecutor",

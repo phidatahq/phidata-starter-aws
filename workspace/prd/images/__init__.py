@@ -13,12 +13,12 @@ from workspace.settings import (
 # -*- Prd Docker images
 
 prd_images = []
-image_repo = "phidata"
+image_repo = "repo"
 image_tag = "prd"
 # Shared image params. Set using the .env file
 skip_docker_cache = getenv("SKIP_DOCKER_CACHE", False)
 pull_docker_images = getenv("PULL_DOCKER_IMAGES", False)
-push_docker_images = True # getenv("PUSH_DOCKER_IMAGES", False)
+push_docker_images = getenv("PUSH_DOCKER_IMAGES", False)
 
 # Airflow image
 prd_airflow_image = DockerImage(

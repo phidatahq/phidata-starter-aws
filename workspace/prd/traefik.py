@@ -77,7 +77,7 @@ if superset_enabled:
         }
     )
 
-traefik_name = f"traefik-{prd_key}"
+traefik_name = "traefik"
 traefik_ingress_route = IngressRoute(
     replicas=3,
     name=traefik_name,
@@ -93,13 +93,17 @@ traefik_ingress_route = IngressRoute(
     service_type=ServiceType.LOAD_BALANCER,
     # Use a LoadBalancer provided by AWS
     load_balancer_provider=LoadBalancerProvider.AWS,
-    # Configure the LoadBalancer service using annotations. Reference:
+    # Use a Network Load Balancer: recommended
+    use_nlb=True,
+    # `ip` or `instance`
+    nlb_target_type="ip",
+    # `internet-facing` or `internal`
+    load_balancer_scheme="internet-facing",
+    # You may configure the LoadBalancer using annotations:
     # https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.2/guide/service/annotations/#annotations
-    service_annotations={
-        "service.beta.kubernetes.io/aws-load-balancer-name": traefik_name,
-        "service.beta.kubernetes.io/aws-load-balancer-type": "nlb-ip",
-        "service.beta.kubernetes.io/aws-load-balancer-scheme": "internet-facing",
-    },
+    # service_annotations={
+    #     "service.beta.kubernetes.io/aws-load-balancer-name": traefik_name,
+    # },
     # Read ACM certificate from a summary file and add the certificate ARN to the service_annotations
     acm_certificate_summary_file=prd_aws_dp_certificate.certificate_summary_file,
     # Write access logs to s3
@@ -117,6 +121,7 @@ traefik_ingress_route = IngressRoute(
     topology_spread_key=topology_spread_key,
     topology_spread_max_skew=topology_spread_max_skew,
     topology_spread_when_unsatisfiable=topology_spread_when_unsatisfiable,
+    install_crds=False,
 )
 
 prd_traefik_apps = [traefik_ingress_route] if traefik_enabled else []

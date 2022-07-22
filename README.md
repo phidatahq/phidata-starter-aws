@@ -77,7 +77,7 @@ Alternatively, you can also use a script to build each image:
 
 ## Using the dev environment
 
-The [workspace/dev](workspace/dev) directory contains the files defining the dev resources.
+The [workspace/dev](workspace/dev) directory contains the code for the dev resources.
 
 The `.env` file can be used to add environment variables, which in turn are used to enable/disable the following applications:
 

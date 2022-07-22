@@ -7,7 +7,7 @@ from workspace.settings import ws_name, use_cache, traefik_enabled
 
 # Traefik router
 traefik_container = DockerContainer(
-    name=f"traefik-{ws_name}",
+    name="traefik",
     image="traefik:v2.8.0",
     command=[
         # reference: https://doc.traefik.io/traefik/routing/entrypoints/#configuration-examples
@@ -41,7 +41,7 @@ traefik_container = DockerContainer(
 )
 
 dev_traefik_resources = DockerResourceGroup(
-    name=f"traefik-{ws_name}",
+    name="traefik",
     enabled=traefik_enabled,
     containers=[traefik_container],
 )

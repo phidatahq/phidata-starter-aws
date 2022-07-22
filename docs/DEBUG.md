@@ -4,9 +4,9 @@ This guide describes how to debug issues with the data platform:
 
 ### Debug Airflow Webserver
 
-Find webserver pod using `k get pod`
+Find webserver pod using `kubectl get pod`
 
-1. check logs
+1. Check logs
 
 ```sh
 kubectl logs -f --tail=2000 airflow-ws-deploy-86cdbdd8cc-qtnwt -c airflow-ws-container
@@ -14,7 +14,7 @@ kubectl logs -f --tail=2000 airflow-ws-deploy-86cdbdd8cc-qtnwt -c airflow-ws-con
 kubectl logs -f --tail=2000 airflow-ws-deploy-86cdbdd8cc-qtnwt -c git-sync-workspaces
 ```
 
-2. describe pod
+2. Describe pod
 
 ```sh
 k describe pod/airflow-ws-deploy-86cdbdd8cc-qtnwt
@@ -25,13 +25,13 @@ k describe pod/airflow-ws-deploy-86cdbdd8cc-qtnwt
 ```sh
 kubectl exec -it airflow-ws-deploy-86cdbdd8cc-qtnwt -c airflow-ws-container -- zsh
 
-cd /usr/local/workspaces
+cd /mnt/workspaces
 ls -l
 ```
 
 ### Debug Traefik
 
 ```sh
-k get ingressroutes
-k describe ingressroutes websecure-ingress
+kubectl get ingressroutes
+kubectl describe ingressroutes websecure-ingress
 ```

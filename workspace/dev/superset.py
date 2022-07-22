@@ -13,7 +13,7 @@ from workspace.settings import ws_name, ws_dir_path, use_cache, superset_enabled
 
 # Superset db: A postgres instance to use as the database for superset
 dev_superset_db = PostgresDb(
-    name=f"ss-db-{ws_name}",
+    name=f"superset-db-{ws_name}",
     enabled=superset_enabled,
     db_user="superset",
     db_password="superset",
@@ -24,7 +24,7 @@ dev_superset_db = PostgresDb(
 
 # Superset redis: A redis instance to use as the celery backend for superset
 dev_superset_redis = Redis(
-    name=f"ss-redis-{ws_name}",
+    name=f"superset-redis-{ws_name}",
     enabled=superset_enabled,
     command=["redis-server", "--save", "60", "1", "--loglevel", "debug"],
     container_host_port=6449,

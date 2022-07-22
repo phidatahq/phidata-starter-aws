@@ -29,6 +29,7 @@ dev_glue_iam_role = create_glue_iam_role(
 # -*- Define dev aws resources using the AwsConfig
 dev_aws_config = AwsConfig(
     env=dev_env,
+    enabled=False,
     resources=AwsResourceGroup(
         iam_roles=[dev_glue_iam_role],
         s3_buckets=[dev_data_s3_bucket],
