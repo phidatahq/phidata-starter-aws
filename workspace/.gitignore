@@ -1,0 +1,34 @@
+# Sensitive AWS Info
+# Ignore ACM certificate
+aws/acm
+
+# Sensitive K8s Info
+# k8s/prd may contain secrets which should not be checked in
+k8s/prd
+# ingore dev manifests
+k8s/dev
+# ingore stg manifests
+k8s/stg
+# ingore test manifests
+k8s/test
+
+# Ignore stg pg-db data
+stg/pg_db
+# Ignore stg airflow-db data
+stg/airflow_db
+
+# Ignore test pg-db data
+test/pg_db
+# Ignore test airflow-db data
+test/airflow_db
+
+# Ignore secrets
+secrets
+
+# Ignore env variables passed to workflows
+local.env
+local_env.py
+docker.env
+docker_env.py
+k8s.env
+k8s_env.py

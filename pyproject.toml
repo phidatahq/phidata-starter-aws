@@ -1,0 +1,67 @@
+[project]
+name = "data-platform"
+version = "0.1.0"
+requires-python = ">3.7"
+readme = "README.md"
+authors = [
+  {name = "Data Team", email = "data@team.com"}
+]
+
+dependencies = [
+    "boto3",
+    "pandas",
+    "sqlalchemy",
+    "awswrangler",
+    "ipython",
+    "phidata",
+]
+
+[project.optional-dependencies]
+dev = [
+    "black",
+    "mypy",
+    "pytest",
+]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["workspace", "data"]
+
+# Update this value if the workspace directory is renamed.
+# [tool.phidata]
+# workspace = "workspace"
+
+[tool.mypy]
+check_untyped_defs = true
+no_implicit_optional = true
+warn_unused_configs = true
+exclude = [
+    "dpenv*",
+    "dpenvdev*",
+    "workspace/dev/airflow_resources/*",
+    "workspace/stg/airflow_resources/*",
+    "workspace/prd/airflow_resources/*",
+    "workspace/dev/superset_resources/*",
+    "workspace/stg/superset_resources/*",
+    "workspace/prd/superset_resources/*",
+    "workspace/dev/jupyter_resources/*",
+    "workspace/stg/jupyter_resources/*",
+    "workspace/prd/jupyter_resources/*",
+]
+
+[[tool.mypy.overrides]]
+module = [
+    "airflow",
+    "airflow.*",
+    "phidata",
+    "phidata.*",
+    "pandas.*",
+    "setuptools",
+    "setuptools.*",
+    "sqlalchemy",
+    "sqlalchemy.*",
+]
+ignore_missing_imports = true
