@@ -92,7 +92,7 @@ Step 2: In another terminal start the kubectl proxy
 kubectl proxy
 ```
 
-Step 3: To access the dashboard endpoint, open the following [link](http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#!/login.) with a web browser
+Step 3: To access the dashboard endpoint, open the following [link](http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#!/login.) in a web browser:
 
 http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#!/login
 
@@ -139,6 +139,26 @@ k get nodes
 ## Create a production release
 
 Please read the [production_release](./production_release.md) guide.
+
+## Shutdown production platform
+
+1. Activate a virtual env
+
+```sh
+source ~/.venvs/dpenv/bin/activate
+```
+
+2. Delete k8s resources
+
+```sh
+phi ws down --env prd --config k8s
+```
+
+3. Delete aws resources
+
+```sh
+phi ws down --env prd --config aws
+```
 
 ## Helpful commands
 
