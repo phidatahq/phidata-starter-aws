@@ -10,6 +10,8 @@ from phidata.utils.common import (
     get_default_pod_name,
 )
 
+from workspace.settings import whoami_enabled
+
 whoami_name = "whoami"
 whoami_port = CreatePort(
     name="http",
@@ -25,11 +27,11 @@ whoami_container = CreateContainer(
     ports=[whoami_port],
 )
 whoami_deployment = CreateDeployment(
+    replicas=1,
     deploy_name=get_default_deploy_name(whoami_name),
     pod_name=get_default_pod_name(whoami_name),
     app_name=whoami_name,
     containers=[whoami_container],
-    replicas=3,
     topology_spread_key="kubernetes.io/hostname",
     topology_spread_max_skew=2,
     topology_spread_when_unsatisfiable="ScheduleAnyway",
@@ -42,6 +44,7 @@ whoami_service = CreateService(
 )
 whoami_k8s_rg = CreateK8sResourceGroup(
     name=whoami_name,
+    enabled=whoami_enabled,
     services=[whoami_service],
     deployments=[whoami_deployment],
 )

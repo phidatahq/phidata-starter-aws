@@ -81,37 +81,32 @@ traefik_name = "traefik"
 traefik_ingress_route = IngressRoute(
     replicas=3,
     name=traefik_name,
-    domain_name=prd_domain,
-    access_logs=True,
     web_enabled=True,
     web_routes=routes,
     websecure_enabled=True,
     websecure_routes=routes,
     # Use ACM certificate to enable HTTPS
     forward_web_to_websecure=True,
-    # Use a LoadBalancer service
-    service_type=ServiceType.LOAD_BALANCER,
-    # Use a LoadBalancer provided by AWS
-    load_balancer_provider=LoadBalancerProvider.AWS,
-    # Use a Network Load Balancer: recommended
-    use_nlb=True,
-    # `ip` or `instance`
-    nlb_target_type="ip",
-    # `internet-facing` or `internal`
-    load_balancer_scheme="internet-facing",
-    # You may configure the LoadBalancer using annotations:
-    # https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.2/guide/service/annotations/#annotations
-    # service_annotations={
-    #     "service.beta.kubernetes.io/aws-load-balancer-name": traefik_name,
-    # },
     # Read ACM certificate from a summary file and add the certificate ARN to the service_annotations
     acm_certificate_summary_file=prd_aws_dp_certificate.certificate_summary_file,
-    # Write access logs to s3
-    access_logs_to_s3=True,
-    access_logs_s3_bucket=prd_logs_s3_bucket.name,
-    access_logs_s3_bucket_prefix=traefik_name,
-    # Enable traefik dashboard at traefik.prd_domain
+    # Use a LoadBalancer service
+    service_type=ServiceType.LOAD_BALANCER,
+    # Configure the LoadBalancer using annotations:
+    service_annotations={
+        # Use a Network LoadBalancer
+        # reference: https://kubernetes.io/docs/concepts/services-networking/service/#aws-nlb-support
+        "service.beta.kubernetes.io/aws-load-balancer-type": "nlb",
+        "service.beta.kubernetes.io/aws-load-balancer-nlb-target-type": "ip",
+        # This LoadBalancer is internet-facing
+        # reference: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
+        "service.beta.kubernetes.io/aws-load-balancer-internal": "false",
+        # This annotation does not work with AWS but good to add for posterity
+        "service.beta.kubernetes.io/aws-load-balancer-name": traefik_name,
+    },
+    # Enable traefik dashboard
     dashboard_enabled=True,
+    # Serve traefik dashboard at traefik.prd_domain
+    domain_name=prd_domain,
     # The dashboard is gated behind a user:password, which is generated using the cmd:
     #   htpasswd -nb user password
     # You can provide the "users:password" list as DASHBOARD_AUTH_USERS in the secrets_file
@@ -121,7 +116,6 @@ traefik_ingress_route = IngressRoute(
     topology_spread_key=topology_spread_key,
     topology_spread_max_skew=topology_spread_max_skew,
     topology_spread_when_unsatisfiable=topology_spread_when_unsatisfiable,
-    install_crds=False,
 )
 
 prd_traefik_apps = [traefik_ingress_route] if traefik_enabled else []

@@ -121,7 +121,7 @@ prd_superset_ws = SupersetWebserver(
 )
 
 # Superset init
-superset_init_enabled = True  # Mark as False after first run
+superset_init_enabled = False  # Mark as False after first run
 prd_superset_init = SupersetInit(
     enabled=(superset_enabled and superset_init_enabled),
     image_name=prd_superset_image.name,

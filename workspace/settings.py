@@ -1,6 +1,8 @@
 from os import getenv
 from pathlib import Path
 
+from phidata.utils.env_var import env_var_is_true
+
 # -*- Workspace settings
 
 # Workspace name
@@ -27,9 +29,10 @@ use_cache: bool = getenv("CACHE", "true").lower().startswith("true")
 
 # -*- Enable apps using enviroment variables. Set in the .env file.
 
-pg_dbs_enabled: bool = getenv("PG_DBS_ENABLED", "true").lower().startswith("true")
-databox_enabled: bool = getenv("DATABOX_ENABLED", "true").lower().startswith("true")
-airflow_enabled: bool = getenv("AIRFLOW_ENABLED", "false").lower().startswith("true")
-superset_enabled: bool = getenv("SUPERSET_ENABLED", "false").lower().startswith("true")
-jupyter_enabled: bool = getenv("JUPYTER_ENABLED", "false").lower().startswith("true")
-traefik_enabled: bool = getenv("TRAEFIK_ENABLED", "true").lower().startswith("true")
+airflow_enabled: bool = env_var_is_true("AIRFLOW_ENABLED", False)
+databox_enabled: bool = env_var_is_true("DATABOX_ENABLED", True)
+jupyter_enabled: bool = env_var_is_true("JUPYTER_ENABLED", False)
+pg_dbs_enabled: bool = env_var_is_true("PG_DBS_ENABLED", True)
+superset_enabled: bool = env_var_is_true("SUPERSET_ENABLED", False)
+traefik_enabled: bool = env_var_is_true("TRAEFIK_ENABLED", True)
+whoami_enabled: bool = env_var_is_true("WHOAMI_ENABLED", True)

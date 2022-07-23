@@ -6,7 +6,6 @@ from workspace.prd.aws_resources import prd_eks_cluster
 from workspace.prd.superset import prd_superset_apps
 from workspace.prd.traefik import prd_traefik_apps
 from workspace.prd.pg_dbs import prd_pg_db_apps
-from workspace.k8s.eks.admin import eks_admin_k8s_resources
 from workspace.k8s.whoami import whoami_k8s_rg
 
 
@@ -14,7 +13,6 @@ from workspace.k8s.whoami import whoami_k8s_rg
 prd_k8s_config = K8sConfig(
     env=prd_env,
     apps=prd_airflow_apps + prd_superset_apps + prd_pg_db_apps + prd_traefik_apps,
-    resources=[eks_admin_k8s_resources],
     create_resources=[whoami_k8s_rg],
     eks_cluster=prd_eks_cluster,
 )

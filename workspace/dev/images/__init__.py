@@ -13,9 +13,9 @@ from workspace.settings import (
 # -*- Dev Docker images
 
 dev_images = []
-image_repo = "repo"
 image_tag = "dev"
 # Shared image params. Set using the .env file
+image_repo = getenv("IMAGE_REPO", "local")
 skip_docker_cache = getenv("SKIP_DOCKER_CACHE", False)
 pull_docker_images = getenv("PULL_DOCKER_IMAGES", False)
 push_docker_images = getenv("PUSH_DOCKER_IMAGES", False)
