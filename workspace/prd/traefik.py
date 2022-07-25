@@ -1,5 +1,4 @@
-from phidata.app.traefik import IngressRoute, LoadBalancerProvider
-from phidata.infra.k8s.create.core.v1.service import ServiceType
+from phidata.app.traefik import IngressRoute, ServiceType
 
 from workspace.settings import (
     use_cache,
@@ -8,11 +7,10 @@ from workspace.settings import (
     superset_enabled,
     traefik_enabled,
 )
-from workspace.prd.aws_resources import prd_logs_s3_bucket, prd_aws_dp_certificate
+from workspace.prd.aws_resources import prd_aws_dp_certificate
 from workspace.prd.airflow import prd_airflow_ws, prd_airflow_flower
 from workspace.prd.superset import prd_superset_ws
 from workspace.prd.settings import (
-    prd_key,
     prd_domain,
     services_ng_label,
     topology_spread_key,

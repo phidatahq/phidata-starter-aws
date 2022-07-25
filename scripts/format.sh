@@ -13,9 +13,9 @@ ROOT_DIR="$( dirname $CURR_DIR )"
 source ${CURR_DIR}/_utils.sh
 
 main() {
-  print_info "Running: black ${ROOT_DIR}"
+  print_heading "Running: black ${ROOT_DIR}"
   black ${ROOT_DIR}
-  print_info "Running: mypy ${ROOT_DIR} --config-file ${ROOT_DIR}/pyproject.toml"
+  print_heading "Running: mypy ${ROOT_DIR} --config-file ${ROOT_DIR}/pyproject.toml"
   mypy ${ROOT_DIR} --config-file ${ROOT_DIR}/pyproject.toml
 }
 

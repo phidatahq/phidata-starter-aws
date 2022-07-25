@@ -10,7 +10,7 @@ from workspace.settings import (
     data_platform_dir_path,
 )
 
-# -*- Prd Docker images
+# -*- Prd images
 
 prd_images = []
 image_tag = "prd"

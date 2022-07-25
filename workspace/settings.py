@@ -1,4 +1,3 @@
-from os import getenv
 from pathlib import Path
 
 from phidata.utils.env_var import env_var_is_true
@@ -25,7 +24,7 @@ aws_region: str = "us-east-1"
 # When CACHE=True then phi will not recreate existing resources.
 # Example: `CACHE=f phi ws up --env dev --name databox --type container`
 #           will restart existing databox container.
-use_cache: bool = getenv("CACHE", "true").lower().startswith("true")
+use_cache: bool = env_var_is_true("CACHE", True)
 
 # -*- Enable apps using enviroment variables. Set in the .env file.
 

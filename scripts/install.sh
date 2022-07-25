@@ -16,15 +16,15 @@ ROOT_DIR="$( dirname $CURR_DIR )"
 source ${CURR_DIR}/_utils.sh
 
 main() {
-  print_info "Installing workspace: ${ROOT_DIR}"
+  print_heading "Installing workspace: ${ROOT_DIR}"
 
-  print_info "Installing requirements.txt"
+  print_heading "Installing requirements.txt"
   pip install -r ${ROOT_DIR}/requirements.txt --no-deps
 
-  print_info "Installing workspace ${ROOT_DIR} with [dev] extras"
+  print_heading "Installing workspace ${ROOT_DIR} with [dev] extras"
   pip3 install --editable "${ROOT_DIR}[dev]"
 
-  # print_info "Installing airflow requirements without dependencies for code completion"
+  # print_heading "Installing airflow requirements without dependencies for code completion"
   # pip install -r ${ROOT_DIR}/workspace/dev/airflow_resources/requirements-airflow.txt --no-deps
 }
 

@@ -72,7 +72,7 @@ mount_workspace: bool = True
 git_sync_branch: str = "main"
 # Read env variables from env/prd_superset_env.yml
 prd_superset_env_file: Path = ws_dir_path.joinpath("env/prd_superset_env.yml")
-# Read secrets from env/prd_superset_secrets.yml
+# Read secrets from secrets/prd_superset_secrets.yml
 prd_superset_secrets_file: Path = ws_dir_path.joinpath(
     "secrets/prd_superset_secrets.yml"
 )

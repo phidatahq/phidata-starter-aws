@@ -1,25 +1,25 @@
 from typing import Dict
-
 from pathlib import Path
+
 from phidata.app.airflow import (
     AirflowWebserver,
     AirflowScheduler,
     AirflowWorker,
     AirflowFlower,
+    ImagePullPolicy,
 )
 from phidata.app.postgres import PostgresDb, PostgresVolumeType
 from phidata.app.redis import Redis, RedisVolumeType
 from phidata.infra.aws.resource.group import AwsResourceGroup
 from phidata.infra.aws.resource.ec2.volume import EbsVolume
-from phidata.infra.k8s.enums.image_pull_policy import ImagePullPolicy
 
 from workspace.settings import (
     aws_az,
+    aws_region,
+    airflow_enabled,
+    use_cache,
     ws_repo,
     ws_dir_path,
-    use_cache,
-    airflow_enabled,
-    superset_enabled,
 )
 from workspace.prd.aws_resources import prd_logs_s3_bucket
 from workspace.prd.images import prd_airflow_image
@@ -65,7 +65,7 @@ prd_airflow_aws_resources = AwsResourceGroup(
 
 # -*- Kubernetes resources
 
-# Shared k8s settings
+# Shared settings
 # waits for airflow-db to be ready before starting app
 wait_for_db: bool = True
 # waits for airflow-redis to be ready before starting app
@@ -74,13 +74,13 @@ wait_for_redis: bool = True
 executor: str = "CeleryExecutor"
 # Mount the ws_repo using git-sync
 mount_workspace: bool = True
-# Mount the main branch
+# Mount the main branch of the ws_repo
 git_sync_branch: str = "main"
 # Read env variables from env/prd_airflow_env.yml
 prd_airflow_env_file: Path = ws_dir_path.joinpath("env/prd_airflow_env.yml")
-# Read secrets from env/prd_airflow_secrets.yml
+# Read secrets from secrets/prd_airflow_secrets.yml
 prd_airflow_secrets_file: Path = ws_dir_path.joinpath("secrets/prd_airflow_secrets.yml")
-# Shared airflow env
+# Add airflow configuration using env variables
 prd_airflow_env: Dict[str, str] = {
     "AIRFLOW__WEBSERVER__BASE_URL": f"https://airflow.{prd_domain}",
     "AIRFLOW__WEBSERVER__EXPOSE_CONFIG": "True",
@@ -88,6 +88,7 @@ prd_airflow_env: Dict[str, str] = {
     "AIRFLOW__WEBSERVER__EXPOSE_STACKTRACE": "True",
     "AIRFLOW__WEBSERVER__ENABLE_PROXY_FIX": "True",
     # Create aws_default connection_id
+    "AWS_DEFAULT_REGION": aws_region,
     "AIRFLOW_CONN_AWS_DEFAULT": "aws://",
     # Enable remote logging using s3
     "AIRFLOW__LOGGING__REMOTE_LOGGING": "True",
@@ -124,8 +125,6 @@ prd_airflow_ws = AirflowWebserver(
     image_pull_policy=ImagePullPolicy.ALWAYS,
     db_app=prd_airflow_db,
     wait_for_db=wait_for_db,
-    # Waits for scheduler to initialize airflow db -- mark as false after first run
-    wait_for_db_init=True,
     redis_app=prd_airflow_redis,
     wait_for_redis=wait_for_redis,
     executor=executor,
@@ -139,6 +138,9 @@ prd_airflow_ws = AirflowWebserver(
     topology_spread_key=topology_spread_key,
     topology_spread_max_skew=topology_spread_max_skew,
     topology_spread_when_unsatisfiable=topology_spread_when_unsatisfiable,
+    # Settings to mark as false after first run
+    # Wait for scheduler to initialize airflow db -- mark as false after first run
+    wait_for_db_init=True,
 )
 
 # Airflow scheduler
@@ -150,10 +152,6 @@ prd_airflow_scheduler = AirflowScheduler(
     image_pull_policy=ImagePullPolicy.ALWAYS,
     db_app=prd_airflow_db,
     wait_for_db=wait_for_db,
-    # Init airflow db on container start -- mark as false after first run
-    init_airflow_db=True,
-    # Upgrade the airflow db on container start -- mark as false after first run
-    upgrade_airflow_db=True,
     redis_app=prd_airflow_redis,
     wait_for_redis=wait_for_redis,
     executor=executor,
@@ -163,12 +161,17 @@ prd_airflow_scheduler = AirflowScheduler(
     env_file=prd_airflow_env_file,
     secrets_file=prd_airflow_secrets_file,
     use_cache=use_cache,
-    # Creates airflow user: admin, pass: admin
-    create_airflow_admin_user=True,
     pod_node_selector=services_ng_label,
     topology_spread_key=topology_spread_key,
     topology_spread_max_skew=topology_spread_max_skew,
     topology_spread_when_unsatisfiable=topology_spread_when_unsatisfiable,
+    # Settings to mark as false after first run
+    # Init airflow db on container start -- mark as false after first run
+    init_airflow_db=True,
+    # Upgrade the airflow db on container start -- mark as false after first run
+    upgrade_airflow_db=True,
+    # Creates airflow user: admin, pass: admin -- mark as false after first run
+    create_airflow_admin_user=True,
 )
 
 # Airflow worker queue
@@ -181,8 +184,6 @@ prd_airflow_worker = AirflowWorker(
     image_pull_policy=ImagePullPolicy.ALWAYS,
     db_app=prd_airflow_db,
     wait_for_db=wait_for_db,
-    # Waits for scheduler to initialize airflow db -- mark as false after first run
-    wait_for_db_init=True,
     redis_app=prd_airflow_redis,
     wait_for_redis=wait_for_redis,
     executor=executor,
@@ -192,10 +193,13 @@ prd_airflow_worker = AirflowWorker(
     env_file=prd_airflow_env_file,
     secrets_file=prd_airflow_secrets_file,
     use_cache=use_cache,
-    pod_node_selector=services_ng_label,
+    pod_node_selector=workers_ng_label,
     topology_spread_key=topology_spread_key,
     topology_spread_max_skew=topology_spread_max_skew,
     topology_spread_when_unsatisfiable=topology_spread_when_unsatisfiable,
+    # Settings to mark as false after first run
+    # Wait for scheduler to initialize airflow db -- mark as false after first run
+    wait_for_db_init=True,
 )
 
 
@@ -208,8 +212,6 @@ prd_airflow_flower = AirflowFlower(
     image_pull_policy=ImagePullPolicy.ALWAYS,
     db_app=prd_airflow_db,
     wait_for_db=wait_for_db,
-    # Waits for scheduler to initialize airflow db -- mark as false after first run
-    wait_for_db_init=True,
     redis_app=prd_airflow_redis,
     wait_for_redis=wait_for_redis,
     executor=executor,
@@ -223,6 +225,9 @@ prd_airflow_flower = AirflowFlower(
     topology_spread_key=topology_spread_key,
     topology_spread_max_skew=topology_spread_max_skew,
     topology_spread_when_unsatisfiable=topology_spread_when_unsatisfiable,
+    # Settings to mark as false after first run
+    # Wait for scheduler to initialize airflow db -- mark as false after first run
+    wait_for_db_init=True,
 )
 
 prd_airflow_apps = (

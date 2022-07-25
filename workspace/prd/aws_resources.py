@@ -32,9 +32,9 @@ prd_logs_s3_bucket = S3Bucket(
     skip_delete=aws_skip_delete,
 )
 
-# S3 bucket for data warehouse
-prd_warehouse_s3_bucket = S3Bucket(
-    name=f"{prd_key}-warehouse",
+# S3 bucket for storing data
+prd_data_s3_bucket = S3Bucket(
+    name=f"{prd_key}-data",
     acl="private",
     skip_delete=aws_skip_delete,
 )
@@ -111,7 +111,7 @@ prd_aws_dp_certificate = AcmCertificate(
 prd_aws_resources = AwsResourceGroup(
     name=prd_key,
     acm_certificates=[prd_aws_dp_certificate],
-    s3_buckets=[prd_logs_s3_bucket, prd_warehouse_s3_bucket],
+    s3_buckets=[prd_logs_s3_bucket, prd_data_s3_bucket],
     cloudformation_stacks=[prd_vpc_stack],
     eks_cluster=prd_eks_cluster,
     eks_kubeconfig=prd_eks_kubeconfig,

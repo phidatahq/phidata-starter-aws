@@ -10,7 +10,7 @@ from workspace.settings import (
     data_platform_dir_path,
 )
 
-# -*- Dev Docker images
+# -*- Dev images
 
 dev_images = []
 image_tag = "dev"

@@ -12,16 +12,6 @@ k8s/stg
 # ingore test manifests
 k8s/test
 
-# Ignore stg pg-db data
-stg/pg_db
-# Ignore stg airflow-db data
-stg/airflow_db
-
-# Ignore test pg-db data
-test/pg_db
-# Ignore test airflow-db data
-test/airflow_db
-
 # Ignore secrets
 secrets
 

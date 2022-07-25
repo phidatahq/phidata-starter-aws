@@ -8,12 +8,11 @@ authors = [
 ]
 
 dependencies = [
-    "boto3",
-    "pandas",
-    "sqlalchemy",
     "awswrangler",
     "ipython",
+    "pandas",
     "phidata>=0.2.0.dev2",
+    "sqlalchemy",
 ]
 
 [project.optional-dependencies]

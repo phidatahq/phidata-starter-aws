@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from phidata.app.postgres import PostgresDb
 from phidata.app.redis import Redis
 from phidata.app.superset import (
@@ -9,7 +11,7 @@ from phidata.app.superset import (
 
 from workspace.settings import ws_name, ws_dir_path, use_cache, superset_enabled
 
-# -*- Superset docker resources
+# -*- Docker resources
 
 # Superset db: A postgres instance to use as the database for superset
 dev_superset_db = PostgresDb(
@@ -30,24 +32,35 @@ dev_superset_redis = Redis(
     container_host_port=6449,
 )
 
+# Shared settings
+# waits for superset-db to be ready before starting app
+wait_for_db: bool = True
+# waits for superset-redis to be ready before starting app
+wait_for_redis: bool = True
+# Mount the resources dir using a docker volume
+mount_resources: bool = True
+dev_superset_resources: str = "workspace/dev/superset_resources"
+# Read env variables from env/dev_superset_env.yml
+dev_superset_env_file: Path = ws_dir_path.joinpath("env/dev_superset_env.yml")
+# Read secrets from secrets/dev_superset_secrets.yml
+dev_superset_secrets_file: Path = ws_dir_path.joinpath(
+    "secrets/dev_superset_secrets.yml"
+)
+
 # Superset webserver
 dev_superset_ws = SupersetWebserver(
     enabled=superset_enabled,
     db_app=dev_superset_db,
-    wait_for_db=True,
+    wait_for_db=wait_for_db,
     redis_app=dev_superset_redis,
-    wait_for_redis=True,
-    mount_resources=True,
-    resources_dir="workspace/dev/superset_resources",
-    # Read env variables from env/dev_superset_env.yml
-    env_file=ws_dir_path.joinpath("env/dev_superset_env.yml"),
-    # Read secrets from env/dev_superset_secrets.yml
-    secrets_file=ws_dir_path.joinpath("secrets/dev_superset_secrets.yml"),
+    wait_for_redis=wait_for_redis,
+    mount_resources=mount_resources,
+    resources_dir=dev_superset_resources,
+    env_file=dev_superset_env_file,
+    secrets_file=dev_superset_secrets_file,
+    use_cache=use_cache,
     # Access the superset webserver on http://localhost:8410
     app_host_port=8410,
-    # use_cache=False will recreate the container every time you run `phi ws up`
-    # Use it like: `CACHE=false phi ws up`
-    use_cache=use_cache,
     # Serve the superset webserver on superset.dp
     container_labels={
         "traefik.enable": "true",
@@ -59,37 +72,32 @@ dev_superset_ws = SupersetWebserver(
 )
 
 # Superset init
-# This container initializes for superset
-# Only required once
+superset_init_enabled = False  # Mark as False after first run
 dev_superset_init = SupersetInit(
-    enabled=superset_enabled,
+    enabled=(superset_enabled and superset_init_enabled),
     db_app=dev_superset_db,
-    wait_for_db=True,
+    wait_for_db=wait_for_db,
     redis_app=dev_superset_redis,
-    wait_for_redis=True,
-    mount_resources=True,
-    resources_dir="workspace/dev/superset_resources",
-    # Read env variables from env/dev_superset_env.yml
-    env_file=ws_dir_path.joinpath("env/dev_superset_env.yml"),
-    # Read secrets from env/dev_superset_secrets.yml
-    secrets_file=ws_dir_path.joinpath("secrets/dev_superset_secrets.yml"),
-    load_examples=True,
+    wait_for_redis=wait_for_redis,
+    mount_resources=mount_resources,
+    resources_dir=dev_superset_resources,
+    env_file=dev_superset_env_file,
+    secrets_file=dev_superset_secrets_file,
     use_cache=use_cache,
+    load_examples=True,
 )
 
 # Superset worker
 dev_superset_worker = SupersetWorker(
     enabled=superset_enabled,
     db_app=dev_superset_db,
-    wait_for_db=True,
+    wait_for_db=wait_for_db,
     redis_app=dev_superset_redis,
-    wait_for_redis=True,
-    mount_resources=True,
-    resources_dir="workspace/dev/superset_resources",
-    # Read env variables from env/dev_superset_env.yml
-    env_file=ws_dir_path.joinpath("env/dev_superset_env.yml"),
-    # Read secrets from env/dev_superset_secrets.yml
-    secrets_file=ws_dir_path.joinpath("secrets/dev_superset_secrets.yml"),
+    wait_for_redis=wait_for_redis,
+    mount_resources=mount_resources,
+    resources_dir=dev_superset_resources,
+    env_file=dev_superset_env_file,
+    secrets_file=dev_superset_secrets_file,
     use_cache=use_cache,
 )
 
@@ -97,15 +105,13 @@ dev_superset_worker = SupersetWorker(
 dev_superset_worker_beat = SupersetWorkerBeat(
     enabled=superset_enabled,
     db_app=dev_superset_db,
-    wait_for_db=True,
+    wait_for_db=wait_for_db,
     redis_app=dev_superset_redis,
-    wait_for_redis=True,
-    mount_resources=True,
-    resources_dir="workspace/dev/superset_resources",
-    # Read env variables from env/dev_superset_env.yml
-    env_file=ws_dir_path.joinpath("env/dev_superset_env.yml"),
-    # Read secrets from env/dev_superset_secrets.yml
-    secrets_file=ws_dir_path.joinpath("secrets/dev_superset_secrets.yml"),
+    wait_for_redis=wait_for_redis,
+    mount_resources=mount_resources,
+    resources_dir=dev_superset_resources,
+    env_file=dev_superset_env_file,
+    secrets_file=dev_superset_secrets_file,
     use_cache=use_cache,
 )
 

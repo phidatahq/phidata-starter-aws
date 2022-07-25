@@ -118,7 +118,7 @@ DATA_CACHE_CONFIG = {
 #
 # Custom configuration
 #
-ROW_LIMIT = 5000
+ROW_LIMIT = 10000
 # Enable Flask-WTF flag for CSRF
 WTF_CSRF_ENABLED = True
 SECRET_KEY = get_env_variable("SECRET_KEY")
