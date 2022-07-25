@@ -3,7 +3,7 @@ from phidata.task.run.sql.query import RunSqlQuery
 from phidata.task.download.url.to_sql import DownloadUrlToSql
 from phidata.workflow import Workflow
 
-from workspace.dev.pg_dbs import dev_pg_db
+from workspace.dev.pg_dbs import dev_pg_db, dev_pg_db_connection_id
 
 ##############################################################################
 ## An example data pipeline that calculates daily active users using postgres.
@@ -16,6 +16,7 @@ from workspace.dev.pg_dbs import dev_pg_db
 # Define a postgres table named `user_activity`. Use the connection url from dev_pg_db in the workspace config.
 user_activity_table = PostgresTable(
     name="user_activity",
+    db_conn_id=dev_pg_db_connection_id,
     db_conn_url=dev_pg_db.get_db_connection_url_local(),
 )
 
@@ -31,6 +32,7 @@ download = DownloadUrlToSql(
 # Define a postgres table named `daily_active_users`.
 daily_active_users_table = PostgresTable(
     name="daily_active_users",
+    db_conn_id=dev_pg_db_connection_id,
     db_conn_url=dev_pg_db.get_db_connection_url_local(),
 )
 
@@ -53,3 +55,4 @@ load_dau = RunSqlQuery(
 
 # Create a workflow for these tasks
 dau = Workflow(name="dau", tasks=[download, load_dau])
+dag = dau.create_airflow_dag(is_paused_upon_creation=True)

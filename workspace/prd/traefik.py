@@ -97,7 +97,7 @@ traefik_ingress_route = IngressRoute(
         # reference: https://kubernetes.io/docs/concepts/services-networking/service/#aws-nlb-support
         "service.beta.kubernetes.io/aws-load-balancer-type": "nlb",
         "service.beta.kubernetes.io/aws-load-balancer-nlb-target-type": "ip",
-        # This LoadBalancer is internet-facing
+        # This LoadBalancer is internet-facing. Set internal = false
         # reference: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
         "service.beta.kubernetes.io/aws-load-balancer-internal": "false",
         # This annotation does not work with AWS but good to add for posterity
