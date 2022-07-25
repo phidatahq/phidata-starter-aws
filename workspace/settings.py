@@ -12,7 +12,7 @@ ws_dir_path: Path = Path(__file__).parent.resolve()
 # Path to the root i.e. data platform directory
 data_platform_dir_path: Path = ws_dir_path.parent
 # Workspace git repo url
-ws_repo: str = "https://github.com/phidatahq/phidata-starter-basic.git"
+ws_repo: str = "https://github.com/phidatahq/phidata-starter-aws.git"
 
 # -*- AWS settings
 
