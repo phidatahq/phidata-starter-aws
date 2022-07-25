@@ -13,7 +13,7 @@ dependencies = [
     "sqlalchemy",
     "awswrangler",
     "ipython",
-    "phidata",
+    "phidata>=0.2.0.dev2",
 ]
 
 [project.optional-dependencies]
