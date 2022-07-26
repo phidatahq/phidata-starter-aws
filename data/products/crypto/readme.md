@@ -20,4 +20,10 @@ airflow tasks test \
   download_crypto_prices \
   download_to_db \
   2022-07-01
+
+# Test airflow task
+airflow tasks test \
+  download_crypto_prices \
+  download_to_db \
+  2022-07-01T01:05:00
 ```

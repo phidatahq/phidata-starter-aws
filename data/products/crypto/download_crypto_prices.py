@@ -1,6 +1,6 @@
 import logging
 from datetime import datetime
-from typing import Dict
+from typing import Dict, Optional
 
 from airflow.decorators import dag, task
 from phidata.asset.table.sql.postgres import PostgresTable
@@ -38,11 +38,10 @@ crypto_prices_table = PostgresTable(
 )
 def download_crypto_prices():
     @task(task_id="download_to_db")
-    def download_to_db(**context) -> Dict[str, Dict]:
+    def download_to_db(logical_date: Optional[datetime] = None) -> bool:
         import pandas as pd
         import requests
 
-        logger.info(f"context: {context}")
         logger.info("Downloading cryptocurrency prices")
         response: Dict[str, Dict] = requests.get(
             url="https://api.coingecko.com/api/v3/simple/price",
@@ -55,15 +54,19 @@ def download_crypto_prices():
                 "include_last_updated_at": "true",
             },
         ).json()
-        logging.info(f"type response: {type(response)}")
-        logging.info(response)
+        logging.info(f"Response: {response}")
+
+        _logical_date: datetime = logical_date or datetime.now()
+        logging.info(f"Logical date: {_logical_date}")
 
         logging.info("Converting response to dataframe")
-        df = pd.DataFrame.from_dict(response)
-        logging.info(f"type df: {type(df)}")
+        df = pd.DataFrame.from_dict(response, orient="index")
+        df["ds"] = _logical_date.strftime("%Y-%m-%d")
+        df["hour"] = _logical_date.strftime("%H")
+
         logging.info(df.head())
 
-        return response
+        return True
 
     download_to_db()
 
