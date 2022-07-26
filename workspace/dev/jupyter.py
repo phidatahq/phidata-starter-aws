@@ -7,7 +7,6 @@ from workspace.settings import ws_name, ws_dir_path, use_cache, jupyter_enabled
 
 # JupyterLab: Run dev notebooks
 dev_jupyter = JupyterLab(
-    name=f"jupyter-{ws_name}",
     enabled=jupyter_enabled,
     image_name=dev_jupyter_image.name,
     image_tag=dev_jupyter_image.tag,

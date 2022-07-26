@@ -8,7 +8,6 @@ from workspace.settings import ws_name, ws_dir_path, use_cache, databox_enabled
 
 # Databox: A containerized environment to run dev workflows
 dev_databox = Databox(
-    name=f"databox-{ws_name}",
     enabled=databox_enabled,
     image_name=dev_databox_image.name,
     image_tag=dev_databox_image.tag,
