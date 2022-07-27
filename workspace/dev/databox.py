@@ -38,6 +38,7 @@ dev_databox = Databox(
         "traefik.http.routers.databox.rule": "Host(`databox.dp`)",
         "traefik.http.services.databox.loadbalancer.server.port": "8080",
     },
+    # install_phidata_dev=True,
 )
 
 dev_databox_apps = [dev_databox] if databox_enabled else []

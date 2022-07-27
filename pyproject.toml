@@ -13,7 +13,7 @@ dependencies = [
     "ipython",
     "pandas",
     "requests",
-    "phidata>=0.2.0.dev2",
+    "phidata>=0.2.0.dev3",
     "sqlalchemy",
 ]
 
@@ -22,6 +22,7 @@ dev = [
     "black",
     "mypy",
     "pytest",
+    "psycopg2-binary",
 ]
 
 [build-system]
